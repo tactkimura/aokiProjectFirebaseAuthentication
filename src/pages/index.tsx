@@ -1,34 +1,25 @@
-import { useEffect, FC, useState } from 'react'
-import { useRouter } from 'next/router'
-import Head from 'next/head'
+import { FC, useEffect, useContext } from 'react';
+import Router from 'next/router';
+import firebase from '../utils/firebase';
+import { AuthContext } from '../auth/AuthProvider';
 
-import firebase from '../utils/firebase'
-
-const Home: FC = (props: any) => {
-  const router = useRouter()
-  const [currentUser, setCurrentUser] = useState<null | object>(null)
+const SignIn: FC = () => {
+  const { currentUser } = useContext(AuthContext);
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
-      user ? setCurrentUser(user) : router.push('/login')
-    })
-  }, [])
+    currentUser && Router.push('/')
+  }, [currentUser]);
 
-  const logOut = async () => {
-    try {
-      await firebase.auth().signOut()
-      router.push('/login')
-    } catch (error) {
-      alert(error.message)
-    }
+  const login = () => {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    console.log(provider);
+    firebase.auth().signInWithRedirect(provider);
   }
-
   return (
-    <div>
-      <pre>{currentUser && JSON.stringify(currentUser, null, 4)}</pre>
-      <button onClick={logOut}>Logout</button>
+    <div className="container">
+      <button onClick={login}>googleでログインする</button>
     </div>
   )
 }
 
-export default Home
+export default SignIn;
