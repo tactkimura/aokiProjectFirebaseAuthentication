@@ -2,6 +2,8 @@ import React, { useEffect, useState, FC } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { auth } from '../utils/firebase'
+import firebase from 'firebase/app';
+import { Button } from '@material-ui/core';
 
 const Login: FC = () => {
   const router = useRouter()
@@ -23,9 +25,20 @@ const Login: FC = () => {
       alert(err.message)
     }
   }
+
+  const googleLogIn = async (e: any) => {
+    e.preventDefault()
+    const provider = new firebase.auth.GoogleAuthProvider();
+    try {
+      await auth.signInWithRedirect(provider);
+      router.push('/');
+    } catch(err){
+      alert(err.message);
+    }
+  }
     return(
       <div className="wrapper">
-      <form className="auth" onSubmit={logIn}>
+      <form className="auth">
         <div>
           <label htmlFor="email" className="auth-label">
             Email:{' '}
@@ -48,9 +61,12 @@ const Login: FC = () => {
             onChange={(e) => setPassword(e.target.value)}
             />
         </div>
-        <button className="auth-btn" type="submit">
+        <Button variant="contained" color='primary' className="auth-btn" onClick={logIn}>
           Login
-        </button>
+        </Button>
+        <Button variant="contained" color='secondary' className="googleLogin-btn" onClick={googleLogIn}>
+          Googleでログインする
+        </Button>
       </form>
       <Link href="/signup">
         <a className="auth-link">signup</a>
