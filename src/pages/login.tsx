@@ -38,6 +38,7 @@ const Login: FC = () => {
   }
     return(
       <div className="wrapper">
+        Hello World
       <form className="auth">
         <div>
           <label htmlFor="email" className="auth-label">
