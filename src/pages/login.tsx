@@ -66,7 +66,10 @@ const Login: FC = () => {
         </Button>
         <Button variant="contained" color='secondary' className="googleLogin-btn" onClick={googleLogIn}>
           Googleでログインする
-        </Button>
+        </Button> <br/>
+        <Link href="/phone">
+          phonelogin
+        </Link>
       </form>
       <Link href="/signup">
         <a className="auth-link">signup</a>
