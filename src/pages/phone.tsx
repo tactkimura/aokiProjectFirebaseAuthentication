@@ -18,25 +18,22 @@ const Phone: FC = () => {
   const phoneLogIn = async (e: any) => {
     e.preventDefault()
     auth.settings.appVerificationDisabledForTesting = true;
-    const code = prompt('Plz input your varify code.');
+    const code: any = prompt('Plz input your varify code.');
     try {
-      (window as any).recaptchaVerifier = new firebase.auth.RecaptchaVerifier('login-btn', {
-        'size': 'invisible',
-        'callback': (response) => {
-          const appVerifier = window.recaptchaVerifier;
-          auth.signInWithPhoneNumber(`+81${phoneNumber}`, appVerifier)
-            .then((confirmationResult) => {
-              // (window as any).confirmationResult = confirmationResult;
-              confirmationResult.confirm(code).then((result) => {
-                router.push('/');
-              }).catch((error) => {
-                alert(error.message);
-              })
-            }).catch((error) => {
-              grecaptcha.reset(window.recaptchaWidgetId);
-            });
-        }
-      })
+      (window as any).recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recapture-container');
+      const appVerifier = (window as any).recaptchaVerifier;
+      auth.signInWithPhoneNumber(`+81${phoneNumber}`, appVerifier)
+        .then((confirmationResult) => {
+          // (window as any).confirmationResult = confirmationResult;
+          confirmationResult.confirm(code).then(() => {
+            router.push('/');
+          }).catch((error) => {
+            alert(error.message);
+          })
+        }).catch((error) => {
+          (window as any).grecaptcha.reset((window as any).recaptchaWidgetId);
+          alert(error.message)
+        });
     } catch(err){
       alert(err.message);
     }
@@ -55,6 +52,7 @@ const Phone: FC = () => {
             onChange={(e) => setPhoneNumber(e.target.value) } 
           />
           <br/>
+          <div id="recapture-container"></div>
           <Button id="login-btn" variant="contained" color="primary" className="login-btn" onClick={phoneLogIn}>
             電話番号でログインする
           </Button> 
